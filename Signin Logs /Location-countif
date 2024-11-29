@@ -1,0 +1,4 @@
+SigninLogs
+| where TimeGenerated > ago(14d)
+| summarize TotalCount = count(), USLogins=countif(Location == "US") by AppDisplayName
+| sort by USLogins desc
