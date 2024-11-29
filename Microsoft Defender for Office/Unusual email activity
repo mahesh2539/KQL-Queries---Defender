@@ -1,2 +1,6 @@
-EmailEvents
-| where 
+OfficeActivity
+| where TimeGenerated > ago(24h)  // Specify the time range (last 24 hours, or adjust as needed)
+| where Operation == "SendOnBehalf" or Operation == "Send"  // Filter for email sending operations
+| summarize EmailsSent = count() by UserId, bin(TimeGenerated, 1h)  // Group by user and hourly interval
+| where EmailsSent > 100  // Set a threshold (e.g., 100 emails per hour as suspicious)
+| order by EmailsSent desc  // Sort by the number of emails sent
