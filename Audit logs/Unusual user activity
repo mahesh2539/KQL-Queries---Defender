@@ -1,0 +1,6 @@
+AuditLogs
+| where TimeGenerated > ago(7d)
+| where ActionType == "User added to role"
+| summarize AddedToRoles = count() by UserPrincipalName, RoleName, bin(TimeGenerated, 1d)
+| where AddedToRoles > 1 // More than one role change in a short period might be suspicious
+| order by AddedToRoles desc
