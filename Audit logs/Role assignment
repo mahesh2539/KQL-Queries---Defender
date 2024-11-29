@@ -1,0 +1,8 @@
+//Check role assignment
+
+AuditLogs
+| where TimeGenerated > ago(30d)
+| where ActionType == "Add member to role" or ActionType == "Remove member from role"
+| where RoleName contains "Admin"
+| summarize Changes = count() by UserPrincipalName, RoleName, bin(TimeGenerated, 1d)
+| order by Changes desc
