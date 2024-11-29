@@ -1,0 +1,10 @@
+SigninLogs
+| where TimeGenerated > ago (14d)
+| where ResultType == 0
+| project TimeGenerated, AppDisplayName, UserPrincipalName, ResultType, ResultDes
+cription,AuthenticationRequirement, Location
+| summarize TotalCount=count(),MultiFactor=countif(AuthenticationRequirement ==
+"multiFactorAuthentication"), SingleFactor=countif(AuthenticationRequirement ==
+"singleFactorAuthentication")
+| extend ['MFA Percentage']=(todouble(MultiFactor) * 100 / todouble(TotalCount))
+| extend ['SFA Percentage']=(todouble(SingleFactor) * 100 / todouble(TotalCount))
